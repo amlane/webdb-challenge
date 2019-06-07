@@ -14,7 +14,7 @@ router.get('/projects', (req, res) => {
     })
 });
 
-router.get('/projects/:id', (req, res) => {
+router.get('/projects/:id', verifyProjectId, (req, res) => {
     const id = req.params.id;
 
     db.getProjectById(id)
@@ -36,7 +36,7 @@ router.post('/projects', (req, res) => {
     })
 });
 
-router.put('/projects/:id', (req, res) => {
+router.put('/projects/:id', verifyProjectId, (req, res) => {
     const id = req.params.id;
     const changes = req.body;
 
@@ -49,7 +49,7 @@ router.put('/projects/:id', (req, res) => {
     })
 });
 
-router.delete('/projects/:id', (req, res) => {
+router.delete('/projects/:id', verifyProjectId, (req, res) => {
     const id = req.params.id;
 
     db.deleteProject(id)
@@ -68,18 +68,19 @@ router.get('/project/:id', (req, res) => {
     const id = req.params.id;
 
     db.getProjectWithActionsById(id)
-    .then(projects => {
+    .then( (projects) => {
         db.getActions()
           .where({ project_id: id })
           .then(actions => {
                 projects.actions = actions;
                 return res.status(200).json(projects);            
-          });
+          })
+          .catch(err => {
+              res.status(500).json(err)
+          })
       })
       .catch(err => {
-        res
-          .status(500)
-          .json(err);
+        res.status(500).json(err);
       });
 });
 
@@ -96,7 +97,7 @@ router.get('/actions', (req, res) => {
     })
 });
 
-router.get('/actions/:id', (req, res) => {
+router.get('/actions/:id', verifyActionId, (req, res) => {
     const id = req.params.id;
 
     db.getActionsById(id)
@@ -118,7 +119,7 @@ router.post('/actions', (req, res) => {
     })
 });
 
-router.put('/actions/:id', (req, res) => {
+router.put('/actions/:id', verifyActionId, (req, res) => {
     const id = req.params.id;
     const changes = req.body;
 
@@ -131,7 +132,7 @@ router.put('/actions/:id', (req, res) => {
     })
 });
 
-router.delete('/actions/:id', (req, res) => {
+router.delete('/actions/:id', verifyActionId, (req, res) => {
     const id = req.params.id;
 
     db.deleteAction(id)
@@ -146,22 +147,39 @@ router.delete('/actions/:id', (req, res) => {
 
 // Custom middleware
 
-// function verifyProjectId(req, res, next){
-//     const id = req.params.id;
+function verifyProjectId(req, res, next){
+    const id = req.params.id;
 
-//     db.findById(id)
-//     .then(item => {
-//         if(item){
-//             req.item = item;
-//             next();
-//         } else {
-//             res.status(404).json({ message: "User Not Found." })
-//         }
-//     })
-//     .catch(err => {
-//         res.status(500).json(err)
-//     })
-// };
+    db.getProjectById(id)
+    .then(item => {
+        if(item){
+            req.item = item;
+            next();
+        } else {
+            res.status(404).json({ message: "Project Not Found." })
+        }
+    })
+    .catch(err => {
+        res.status(500).json(err)
+    })
+};
+
+function verifyActionId(req, res, next){
+    const id = req.params.id;
+
+    db.getActionsById(id)
+    .then(item => {
+        if(item){
+            req.item = item;
+            next();
+        } else {
+            res.status(404).json({ message: "Action Not Found." })
+        }
+    })
+    .catch(err => {
+        res.status(500).json(err)
+    })
+};
 
 
 
