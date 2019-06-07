@@ -43,10 +43,12 @@ router.post('/actions', (req, res) => {
 });
 
 router.get('/projects/:id', (req, res) => {
-    db.getProjectById(req.params.id)
+    const id = req.params.id;
+
+    db.getProjectById(id)
     .then(projects => {
         db.getActions()
-          .where({ project_id: req.params.id})
+          .where({ project_id: id })
           .then(actions => {
             projects.actions = actions;
             return res.status(200).json(projects);

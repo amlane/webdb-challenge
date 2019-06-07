@@ -38,11 +38,11 @@ function getProjectById(id) {
 
       .join('projects', 'projects.id', 'actions.project_id')
       .select(
-        {id: 'projects.id'},
-        {name: 'projects.name'},
-        {projectDesc: 'projects.description'},
-        {description: 'actions.description'},
-        {notes: 'actions.notes'},
-        {completed: 'actions.completed'}
+        'projects.id',
+        'projects.name',
+        'projects.description',
+        'actions.description as action decription',
+        'actions.notes',
+        'actions.completed'
       )
   };
