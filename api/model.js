@@ -12,7 +12,10 @@ module.exports = {
     getProjects, 
     editProject,
     deleteProject,
-    getProjectById
+    getProjectById,
+    getActionsById, 
+    editAction,
+    deleteAction
 }
 
 // Project Helpers
@@ -66,8 +69,25 @@ function getActions(){
     return db('actions')
 }
 
+function getActionsById(id){
+    return db('actions')
+    .where({ id })
+    .first();
+};
+
 function addAction(action) {
     return db('actions')
     .insert(action)
 };
 
+function editAction(id, changes) {
+    return db('actions')
+    .where({ id })
+    .update(changes)
+};
+
+function deleteAction(id) {
+    return db('actions')
+    .where({ id })
+    .del();  //thanks for explaining why! :)
+};

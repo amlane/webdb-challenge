@@ -61,6 +61,9 @@ router.delete('/projects/:id', (req, res) => {
     })
 });
 
+
+// '/api/project/:id' endpoint
+
 router.get('/project/:id', (req, res) => {
     const id = req.params.id;
 
@@ -93,10 +96,47 @@ router.get('/actions', (req, res) => {
     })
 });
 
+router.get('/actions/:id', (req, res) => {
+    const id = req.params.id;
+
+    db.getActionsById(id)
+    .then( action => {
+        res.status(200).json(action)
+    })
+    .catch(err => {
+        res.status(500).json(err)
+    })
+});
+
 router.post('/actions', (req, res) => {
     db.addAction(req.body)
     .then(action => {
         res.status(201).json(action)
+    })
+    .catch(err => {
+        res.status(500).json(err)
+    })
+});
+
+router.put('/actions/:id', (req, res) => {
+    const id = req.params.id;
+    const changes = req.body;
+
+    db.editAction(id, changes)
+    .then(updatedProject => {
+        res.status(201).json(updatedProject)
+    })
+    .catch(err => {
+        res.status(500).json(err)
+    })
+});
+
+router.delete('/actions/:id', (req, res) => {
+    const id = req.params.id;
+
+    db.deleteAction(id)
+    .then(deleted => {
+        res.status(200).json({ message: `${deleted} action deleted.` });
     })
     .catch(err => {
         res.status(500).json(err)
