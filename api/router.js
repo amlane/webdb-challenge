@@ -27,19 +27,27 @@ router.get('/projects/:id', verifyProjectId, (req, res) => {
 });
 
 router.post('/projects', (req, res) => {
-    db.addProject(req.body)
+    const { name, description } = req.body;
+    if( !name || !description ) {
+        res.status(400).json({ message: 'New projects require a name and description.' })
+    } else {
+        db.addProject(req.body)
     .then(project => {
         res.status(201).json(project)
     })
     .catch(err => {
         res.status(500).json(err)
     })
+    }
 });
 
 router.put('/projects/:id', verifyProjectId, (req, res) => {
     const id = req.params.id;
     const changes = req.body;
-
+    const { name, description } = req.body;
+    if( !name || !description ) {
+        res.status(400).json({ message: 'Projects require a name and description.' })
+    } else {
     db.editProject(id, changes)
     .then(updatedProject => {
         res.status(201).json(updatedProject)
@@ -47,6 +55,7 @@ router.put('/projects/:id', verifyProjectId, (req, res) => {
     .catch(err => {
         res.status(500).json(err)
     })
+  }
 });
 
 router.delete('/projects/:id', verifyProjectId, (req, res) => {
@@ -64,7 +73,7 @@ router.delete('/projects/:id', verifyProjectId, (req, res) => {
 
 // '/api/project/:id' endpoint
 
-router.get('/project/:id', (req, res) => {
+router.get('/project/:id', verifyProjectId, (req, res) => {
     const id = req.params.id;
 
     db.getProjectWithActionsById(id)
@@ -110,6 +119,10 @@ router.get('/actions/:id', verifyActionId, (req, res) => {
 });
 
 router.post('/actions', (req, res) => {
+    const { description, notes, project_id } = req.body;
+    if( !notes || !description || !project_id) {
+        res.status(400).json({ message: 'Actions require a description, note and project id.' })
+    } else {
     db.addAction(req.body)
     .then(action => {
         res.status(201).json(action)
@@ -117,12 +130,16 @@ router.post('/actions', (req, res) => {
     .catch(err => {
         res.status(500).json(err)
     })
+  }
 });
 
 router.put('/actions/:id', verifyActionId, (req, res) => {
     const id = req.params.id;
     const changes = req.body;
-
+    const { description, notes, project_id } = req.body;
+    if( !notes || !description || !project_id) {
+        res.status(400).json({ message: 'Actions require a description, note and project id.' })
+    } else {
     db.editAction(id, changes)
     .then(updatedProject => {
         res.status(201).json(updatedProject)
@@ -130,6 +147,7 @@ router.put('/actions/:id', verifyActionId, (req, res) => {
     .catch(err => {
         res.status(500).json(err)
     })
+  }
 });
 
 router.delete('/actions/:id', verifyActionId, (req, res) => {
