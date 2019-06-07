@@ -12,6 +12,14 @@ exports.up = function(knex, Promise) {
         // completed?
         t.boolean('completed')
         .notNullable();
+        //foreign key
+        t.integer('project_id')
+        .notNullable()
+        .unsigned()
+        .references('id')
+        .inTable('projects')
+        .onDelete('CASCADE')
+        .onUpdate('CASCADE')
   })
 };
 
