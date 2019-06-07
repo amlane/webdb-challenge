@@ -40,9 +40,6 @@ function getProjectById(id) {
       .select(
         'projects.id',
         'projects.name',
-        'projects.description',
-        'actions.description as action decription',
-        'actions.notes',
-        'actions.completed'
+        'projects.description'
       )
   };
