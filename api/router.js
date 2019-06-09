@@ -82,9 +82,13 @@ router.get('/project/:id', verifyProjectId, (req, res) => {
         .then(actions => {
             res.status(200).json({ ...project, actions })
         })
-        .catch()
+        .catch(err => {
+            res.status(500).json(err)
+        })
     })
-    .catch()
+    .catch(err => {
+        res.status(500).json(err)
+    })
 });
 
 
