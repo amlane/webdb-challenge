@@ -76,21 +76,19 @@ router.delete('/projects/:id', verifyProjectId, (req, res) => {
 router.get('/project/:id', verifyProjectId, (req, res) => {
     const id = req.params.id;
 
-    db.getProjectWithActionsById(id)
-    .then( (projects) => {
-        db.getActions()
-          .where({ project_id: id })
-          .then(actions => {
-                projects.actions = actions;
-                return res.status(200).json(projects);            
-          })
-          .catch(err => {
-              res.status(500).json(err)
-          })
-      })
-      .catch(err => {
-        res.status(500).json(err);
-      });
+    db.getProjectById(id)
+    .then( project => {
+        db.getActionsByProjectId(id)
+        .then(actions => {
+            res.status(200).json({ ...project, actions })
+        })
+        .catch(err => {
+            res.status(500).json(err)
+        })
+    })
+    .catch(err => {
+        res.status(500).json(err)
+    })
 });
 
 
